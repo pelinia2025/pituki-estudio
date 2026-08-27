@@ -121,3 +121,71 @@ if(form){
     }, 700);
   });
 }
+
+/* ---- Logo interactivo del hero: "el foco se enciende segun donde esta el mouse" ----
+   Un solo loop rAF interpola (spring/lerp) la intensidad de luz --lit y la posicion
+   del brillo hacia el cursor. Al cargar hace un "power-on" con parpadeo. ---- */
+(function heroLogo(){
+  const icon = document.querySelector('.icon-mark');
+  const heroSec = icon && icon.closest('section');
+  if(!icon || !heroSec) return;
+
+  // Envolvemos el icono en un escenario con una capa de brillo (sin tocar el base64)
+  const stage = document.createElement('div'); stage.className = 'logo-stage';
+  const glow = document.createElement('span'); glow.className = 'logo-glow'; glow.setAttribute('aria-hidden','true');
+  icon.parentNode.insertBefore(stage, icon);
+  stage.appendChild(glow); stage.appendChild(icon);
+
+  const IDLE = 0.16;
+  let lit = 0, target = 0, gx = 50, gy = 44, tgx = 50, tgy = 44, hovering = false;
+
+  const apply = () => {
+    stage.style.setProperty('--lit', lit.toFixed(3));
+    stage.style.setProperty('--gx', gx.toFixed(1) + '%');
+    stage.style.setProperty('--gy', gy.toFixed(1) + '%');
+  };
+
+  if(reduce){ lit = 0.22; apply(); return; }   // respaldo estatico
+
+  heroSec.addEventListener('pointermove', e=>{
+    const r = icon.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+    const near = Math.max(0, 1 - dist / (r.width * 2.4));   // 1 cerca del foco, 0 lejos
+    hovering = true;
+    target = IDLE + near * 0.95;
+    const sr = stage.getBoundingClientRect();
+    tgx = ((e.clientX - sr.left) / sr.width) * 100;
+    tgy = ((e.clientY - sr.top) / sr.height) * 100;
+  });
+  heroSec.addEventListener('pointerleave', ()=>{ hovering = false; target = IDLE; tgx = 50; tgy = 44; });
+
+  const loop = (t)=>{
+    const breath = hovering ? 0 : Math.sin(t / 900) * 0.05;   // respiracion tenue en reposo
+    const tgt = Math.min(1.2, target + breath);
+    lit += (tgt - lit) * 0.12;      // lerp -> sensacion de resorte
+    gx  += (tgx - gx) * 0.16;
+    gy  += (tgy - gy) * 0.16;
+    apply();
+    requestAnimationFrame(loop);
+  };
+
+  // Power-on: parpadeo de encendido y luego reposo
+  [[90,0],[150,0.9],[220,0.1],[300,1.15],[380,0.28],[500,1],[720,IDLE]]
+    .forEach(([ms,v]) => setTimeout(()=>{ if(!hovering) target = v; }, ms));
+  requestAnimationFrame(loop);
+})();
+
+/* ---- Botones primarios "magneticos": se inclinan levemente hacia el cursor ---- */
+if(finePointer && !reduce){
+  document.querySelectorAll('.btn-primary').forEach(btn=>{
+    btn.addEventListener('pointermove', e=>{
+      const r = btn.getBoundingClientRect();
+      const mx = (e.clientX - (r.left + r.width/2)) / r.width;
+      const my = (e.clientY - (r.top + r.height/2)) / r.height;
+      // incluye el -2px del hover para no perder la elevacion
+      btn.style.transform = 'translate(' + (mx*6).toFixed(1) + 'px,' + (my*6 - 2).toFixed(1) + 'px)';
+    });
+    btn.addEventListener('pointerleave', ()=>{ btn.style.transform = ''; });
+  });
+}

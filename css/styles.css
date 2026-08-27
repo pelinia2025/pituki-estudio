@@ -134,8 +134,28 @@
 
   .hero-actions{display:flex; align-items:center; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:44px;}
 
-  .icon-mark{width:120px; margin:0 auto 40px; opacity:.92; animation:pulse 5s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{opacity:.7; transform:scale(1);} 50%{opacity:1; transform:scale(1.05);}}
+  /* --- Logo interactivo del hero: el "foco" se enciende segun donde esta el mouse --- */
+  @property --lit{ syntax:'<number>'; inherits:true; initial-value:0; }
+  .icon-mark{width:120px; margin:0 auto 40px; opacity:.92;}         /* fallback sin JS */
+  .logo-stage{position:relative; display:inline-block; margin:0 auto 40px; --lit:0; --gx:50%; --gy:44%;}
+  .logo-stage .icon-mark{margin:0; opacity:1; position:relative; z-index:1;
+    filter:
+      brightness(calc(1 + var(--lit)*0.45))
+      drop-shadow(0 0 calc(var(--lit)*8px)  rgba(255,206,150,calc(var(--lit)*0.85)))
+      drop-shadow(0 0 calc(var(--lit)*22px) rgba(224,126,54, calc(var(--lit)*0.60)));}
+  .logo-glow{position:absolute; inset:-70%; z-index:0; pointer-events:none; border-radius:50%;
+    background:radial-gradient(closest-side circle at var(--gx) var(--gy),
+      rgba(255,196,132,calc(var(--lit)*0.55)),
+      rgba(193,107,47, calc(var(--lit)*0.16)) 46%,
+      transparent 72%);
+    filter:blur(8px);}
+  /* Respaldo suave si el usuario prefiere menos movimiento */
+  @media (prefers-reduced-motion: reduce){
+    .logo-stage{--lit:0.22;}
+  }
+  /* Pulso solo como fallback cuando el JS aun no envolvio el logo (icono directo del hero) */
+  .hero-enter > .icon-mark{animation:pulse 5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:.75; transform:scale(1);} 50%{opacity:1; transform:scale(1.04);}}
 
   /* PILLARS */
   .pillars{display:grid; grid-template-columns:1fr; gap:56px; margin-top:90px; text-align:center;}
@@ -166,6 +186,16 @@
   .svc-tile:hover .svc-num{transform:translateX(2px);}
   .svc-tile h3{font-size:19px; margin-bottom:10px; letter-spacing:-0.01em;}
   .svc-tile p{font-size:14px; color:var(--muted); line-height:1.6;}
+  /* Tarjeta CTA que cierra la rejilla de servicios */
+  .svc-cta{display:block; background:var(--terracotta); color:var(--white);}
+  .svc-cta:hover{background:var(--terracotta-deep);}
+  .svc-cta .svc-num{color:rgba(255,255,255,.85); font-size:20px; line-height:1;}
+  .svc-cta:hover .svc-num{transform:translateX(4px);}
+  .svc-cta h3{color:var(--white);}
+  .svc-cta p{color:rgba(255,255,255,.82);}
+  .svc-cta-link{display:inline-block; margin-top:4px; font-family:'Hanken Grotesk'; font-weight:700; color:var(--white);}
+  .svc-cta::after{display:none;}   /* sin spotlight sobre el CTA */
+  .svc-cta::before{display:none;}
 
   /* PORTAFOLIO */
   .port-grid{display:grid; grid-template-columns:1fr; gap:22px; margin-top:70px; max-width:820px; margin-left:auto; margin-right:auto;}
