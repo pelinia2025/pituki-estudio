@@ -5,11 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Pituki Estudio — Diseño con Intención</title>
 <meta name="description" content="Pituki Estudio — agencia de marketing boutique en Guatemala. Creatividad con propósito: branding, diseño, redes, pauta y producción audiovisual."/>
+<meta name="theme-color" content="#0a0a0b"/>
+<link rel="canonical" href="https://pituki-estudio.vercel.app/"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0b'/%3E%3Cpath d='M16 6a7 7 0 0 0-4 12.7V21a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 16 6z' fill='none' stroke='%23c16b2f' stroke-width='2'/%3E%3Cpath d='M13.5 25.5h5' stroke='%23c16b2f' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Pituki Estudio — Creatividad con propósito"/>
+<meta property="og:description" content="Agencia de marketing boutique en Guatemala. Estrategia, branding, redes, pauta y producción audiovisual con propósito comercial."/>
+<meta property="og:url" content="https://pituki-estudio.vercel.app/"/>
+<meta property="og:locale" content="es_GT"/>
+<meta name="twitter:card" content="summary_large_image"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
+<body>
+<div id="progress" aria-hidden="true"></div>
 
 <nav id="mainNav" class="dark">
   <div class="nav-inner">
@@ -26,6 +37,7 @@
   </div>
 </nav>
 
+<main id="contenido">
 <!-- HERO -->
 <section class="band band-black" style="padding-top:190px;">
   <div class="wrap center hero-enter">
@@ -157,15 +169,29 @@
           <div>Guatemala</div>
         </div>
       </div>
-      <form>
-        <div class="field-group"><label class="label">NOMBRE</label><input type="text" placeholder="Tu nombre"/></div>
-        <div class="field-group"><label class="label">EMAIL</label><input type="email" placeholder="tu@email.com"/></div>
-        <div class="field-group"><label class="label">MENSAJE</label><textarea rows="4" placeholder="Cuéntanos sobre tu proyecto"></textarea></div>
+      <form id="contactForm" novalidate>
+        <div class="field-group">
+          <label class="label" for="cf-nombre">NOMBRE</label>
+          <input id="cf-nombre" name="nombre" type="text" autocomplete="name" placeholder="Tu nombre"/>
+          <span class="field-error" data-for="cf-nombre">Escribe tu nombre.</span>
+        </div>
+        <div class="field-group">
+          <label class="label" for="cf-email">EMAIL</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" placeholder="tu@email.com"/>
+          <span class="field-error" data-for="cf-email">Escribe un correo válido.</span>
+        </div>
+        <div class="field-group">
+          <label class="label" for="cf-mensaje">MENSAJE</label>
+          <textarea id="cf-mensaje" name="mensaje" rows="4" placeholder="Cuéntanos sobre tu proyecto"></textarea>
+          <span class="field-error" data-for="cf-mensaje">Cuéntanos un poco sobre tu proyecto.</span>
+        </div>
         <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+        <p class="form-msg" role="status" aria-live="polite"></p>
       </form>
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap">

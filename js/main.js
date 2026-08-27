@@ -37,3 +37,87 @@ const navIO = new IntersectionObserver((entries)=>{
   });
 }, {rootMargin:'-50% 0px -49% 0px'});
 bands.forEach(b=>navIO.observe(b));
+
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+/* ---- Barra de progreso de scroll + sombra del nav (un solo rAF) ---- */
+const progress = document.getElementById('progress');
+let ticking = false;
+function onScroll(){
+  const st = window.scrollY || document.documentElement.scrollTop;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const p = max > 0 ? st / max : 0;
+  if(progress) progress.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+  nav.classList.toggle('scrolled', st > 8);
+
+  // Parallax sutil del hero: el contenido se aleja y se atenua al bajar
+  if(hero && !reduce){
+    const t = Math.min(st / (window.innerHeight || 800), 1);
+    hero.style.transform = 'translateY(' + (t * 46).toFixed(1) + 'px)';
+    hero.style.opacity = (1 - t * 0.6).toFixed(3);
+  }
+  ticking = false;
+}
+const hero = document.querySelector('.hero-enter');
+if(hero && !reduce) hero.style.willChange = 'transform, opacity';
+window.addEventListener('scroll', ()=>{
+  if(!ticking){ requestAnimationFrame(onScroll); ticking = true; }
+}, {passive:true});
+onScroll();
+
+/* ---- Spotlight que sigue el cursor en las tarjetas de servicio ---- */
+if(finePointer && !reduce){
+  document.querySelectorAll('.svc-tile').forEach(tile=>{
+    tile.addEventListener('pointermove', e=>{
+      const r = tile.getBoundingClientRect();
+      tile.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      tile.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+}
+
+/* ---- Validacion del formulario de contacto (sin backend, mensajes inline) ---- */
+const form = document.getElementById('contactForm');
+if(form){
+  const msg = form.querySelector('.form-msg');
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const rules = {
+    'cf-nombre': v => v.trim().length >= 2,
+    'cf-email':  v => emailRe.test(v.trim()),
+    'cf-mensaje':v => v.trim().length >= 10
+  };
+  function validateField(id){
+    const input = document.getElementById(id);
+    const group = input.closest('.field-group');
+    const ok = rules[id](input.value);
+    group.classList.toggle('invalid', !ok);
+    return ok;
+  }
+  // Re-valida en vivo una vez que el campo ya fue marcado como invalido
+  Object.keys(rules).forEach(id=>{
+    const input = document.getElementById(id);
+    input.addEventListener('input', ()=>{
+      if(input.closest('.field-group').classList.contains('invalid')) validateField(id);
+    });
+  });
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const results = Object.keys(rules).map(validateField);
+    if(msg){ msg.className = 'form-msg'; msg.textContent = ''; }
+    if(results.includes(false)){
+      const firstBad = form.querySelector('.field-group.invalid input, .field-group.invalid textarea');
+      if(firstBad) firstBad.focus();
+      if(msg){ msg.textContent = 'Revisa los campos marcados antes de enviar.'; msg.classList.add('err','show'); }
+      return;
+    }
+    const btn = form.querySelector('button[type="submit"]');
+    btn.classList.add('is-loading'); btn.textContent = 'Enviando…';
+    // Sin backend todavia: simulamos el envio y confirmamos con un mensaje inline.
+    setTimeout(()=>{
+      form.reset();
+      btn.classList.remove('is-loading'); btn.textContent = 'Enviar mensaje';
+      if(msg){ msg.textContent = 'Gracias, recibimos tu mensaje. Te escribimos muy pronto.'; msg.classList.add('ok','show'); }
+    }, 700);
+  });
+}
