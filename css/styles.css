@@ -254,7 +254,8 @@
   .field-error{display:block; margin-top:8px; font-size:12.5px; color:#c0392b; min-height:1em;
     opacity:0; transform:translateY(-3px); transition:opacity .25s var(--ease), transform .25s var(--ease);}
   .field-group.invalid .field-error{opacity:1; transform:none;}
-  .form-msg{margin-top:20px; font-size:14.5px; line-height:1.5; opacity:0; transform:translateY(6px);
+  .form-note{margin-top:14px; font-size:13px; color:var(--muted); line-height:1.5;}
+  .form-msg{margin-top:16px; font-size:14.5px; line-height:1.5; opacity:0; transform:translateY(6px);
     transition:opacity .4s var(--ease), transform .4s var(--ease);}
   .form-msg.show{opacity:1; transform:none;}
   .form-msg.ok{color:var(--terracotta-deep);}
