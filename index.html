@@ -171,7 +171,7 @@
           <div>Guatemala</div>
         </div>
       </div>
-      <form id="contactForm" action="https://formsubmit.co/zulgag@gmail.com" method="POST" novalidate>
+      <form id="contactForm" novalidate>
         <div class="field-group">
           <label class="label" for="cf-nombre">NOMBRE</label>
           <input id="cf-nombre" name="nombre" type="text" autocomplete="name" placeholder="Tu nombre"/>
@@ -199,13 +199,6 @@
           <textarea id="cf-mensaje" name="mensaje" rows="4" placeholder="Cuéntanos sobre tu proyecto"></textarea>
           <span class="field-error" data-for="cf-mensaje">Cuéntanos un poco sobre tu proyecto.</span>
         </div>
-        <!-- FormSubmit (modo estándar): notificación por correo + agradecimiento al cliente + redirección -->
-        <input type="hidden" name="_subject" value="Nuevo mensaje desde el sitio de Pituki"/>
-        <input type="hidden" name="_template" value="table"/>
-        <input type="hidden" name="_captcha" value="false"/>
-        <input type="hidden" name="_next" value="https://pituki-estudio.vercel.app/gracias.html"/>
-        <input type="hidden" name="_autoresponse" value="¡Gracias por escribir a Pituki Estudio! Recibimos tu mensaje y nuestro equipo lo revisará muy pronto para conversar sobre tu marca y cómo acompañarte con creatividad con propósito. Si prefieres algo más directo, escríbenos por WhatsApp al +502 5131 5816. — El equipo de Pituki Estudio · Creatividad con propósito."/>
-        <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;"/>
         <button type="submit" class="btn btn-primary">Enviar mensaje</button>
         <p class="form-msg" role="status" aria-live="polite"></p>
       </form>
