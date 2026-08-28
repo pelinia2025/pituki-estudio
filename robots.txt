@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pituki-estudio.vercel.app/sitemap.xml
