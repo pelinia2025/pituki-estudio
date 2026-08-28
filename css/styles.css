@@ -225,6 +225,17 @@
   /* CTA */
   .cta-actions{margin-top:40px;}
 
+  /* --- Pico de scroll "la idea se enciende": luz calida que florece detras del CTA --- */
+  .sc-peak{position:relative;}
+  .sc-bloom{position:absolute; left:50%; top:44%; z-index:0; width:min(900px,120vw); aspect-ratio:1; margin-left:-0.5px;
+    transform:translate(-50%,-50%); pointer-events:none; opacity:0; border-radius:50%;
+    background:radial-gradient(closest-side circle,
+      rgba(255,196,132,0.42), rgba(224,126,54,0.20) 40%, transparent 72%);
+    filter:blur(10px);}
+  .sc-peak .wrap{position:relative; z-index:1;}
+  /* Palabras del reveal atado al scroll: sin JS quedan legibles (opacity 1 por defecto) */
+  .sc-words .w{display:inline;}
+
   /* CONTACTO */
   .contact-grid{display:grid; grid-template-columns:1fr; gap:60px; margin-top:70px;}
   @media(min-width:900px){ .contact-grid{grid-template-columns:0.85fr 1fr;} }
