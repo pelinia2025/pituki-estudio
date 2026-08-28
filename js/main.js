@@ -83,9 +83,11 @@ if(form){
   const msg = form.querySelector('.form-msg');
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const rules = {
-    'cf-nombre': v => v.trim().length >= 2,
-    'cf-email':  v => emailRe.test(v.trim()),
-    'cf-mensaje':v => v.trim().length >= 10
+    'cf-nombre':   v => v.trim().length >= 2,
+    'cf-email':    v => emailRe.test(v.trim()),
+    'cf-telefono': v => v.replace(/\D/g,'').length >= 7,
+    'cf-pais':     v => v.trim().length >= 2,
+    'cf-mensaje':  v => v.trim().length >= 10
   };
   function validateField(id){
     const input = document.getElementById(id);
@@ -115,12 +117,22 @@ if(form){
     const btn = form.querySelector('button[type="submit"]');
     btn.classList.add('is-loading'); btn.textContent = 'Enviando…';
     if(msg){ msg.className = 'form-msg'; msg.textContent = ''; }
+    const nombreVal = document.getElementById('cf-nombre').value.trim();
     const payload = {
-      nombre:  document.getElementById('cf-nombre').value.trim(),
-      email:   document.getElementById('cf-email').value.trim(),
-      mensaje: document.getElementById('cf-mensaje').value.trim(),
+      nombre:   nombreVal,
+      email:    document.getElementById('cf-email').value.trim(),
+      telefono: document.getElementById('cf-telefono').value.trim(),
+      pais:     document.getElementById('cf-pais').value.trim(),
+      mensaje:  document.getElementById('cf-mensaje').value.trim(),
       _subject: 'Nuevo mensaje desde pituki-estudio.vercel.app',
-      _template: 'table'
+      _template: 'table',
+      // Auto-respuesta de agradecimiento que le llega a quien escribe
+      _autoresponse:
+        '¡Gracias por escribir a Pituki Estudio, ' + nombreVal + '!\n\n' +
+        'Recibimos tu mensaje y nuestro equipo lo revisará muy pronto. Te contactaremos ' +
+        'para conversar sobre tu marca y cómo acompañarte con creatividad con propósito.\n\n' +
+        'Si prefieres algo más directo, escríbenos por WhatsApp al +502 5131 5816.\n\n' +
+        '— El equipo de Pituki Estudio\n"Creatividad con propósito"'
     };
     const restore = () => { btn.classList.remove('is-loading'); btn.textContent = 'Enviar mensaje'; };
     fetch('https://formsubmit.co/ajax/zulgag@gmail.com', {

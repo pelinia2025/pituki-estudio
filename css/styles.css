@@ -243,6 +243,8 @@
   .contact-list a, .contact-list div{display:flex; align-items:center; gap:12px; font-size:16px; padding:16px 0; border-bottom:1px solid var(--line); transition:color .25s var(--ease), transform .3s var(--ease);}
   @media (hover:hover) and (pointer:fine){ .contact-list a:hover{color:var(--terracotta); transform:translateX(6px);} }
   .field-group{margin-bottom:28px;}
+  .field-row{display:grid; grid-template-columns:1fr; gap:0 24px;}
+  @media(min-width:560px){ .field-row{grid-template-columns:1fr 1fr;} }
   .field-group label{display:block; margin-bottom:10px; color:var(--muted);}
   .field-group input, .field-group textarea{width:100%; background:transparent; border:none; border-bottom:2px solid rgba(0,0,0,0.16); font-family:'Manrope'; font-size:16px; padding:10px 2px; color:var(--ink); transition:border-color .25s var(--ease);}
   .field-group input::placeholder, .field-group textarea::placeholder{color:#a8a3a0;}
