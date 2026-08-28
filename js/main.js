@@ -140,8 +140,10 @@ if(form){
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
     })
-    .then(r => { if(!r.ok) throw new Error('http'); return r.json(); })
-    .then(() => {
+    .then(r => r.json())
+    .then(data => {
+      const ok = data && (data.success === true || data.success === 'true');
+      if(!ok) throw new Error(data && data.message || 'fail');
       form.reset(); restore();
       if(msg){ msg.textContent = 'Gracias, recibimos tu mensaje. Te escribimos muy pronto.'; msg.classList.add('ok','show'); }
     })
