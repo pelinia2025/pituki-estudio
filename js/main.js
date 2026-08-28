@@ -111,14 +111,32 @@ if(form){
       if(msg){ msg.textContent = 'Revisa los campos marcados antes de enviar.'; msg.classList.add('err','show'); }
       return;
     }
+    // Conexion sin backend: el formulario llega por correo via FormSubmit (AJAX).
     const btn = form.querySelector('button[type="submit"]');
     btn.classList.add('is-loading'); btn.textContent = 'Enviando…';
-    // Sin backend todavia: simulamos el envio y confirmamos con un mensaje inline.
-    setTimeout(()=>{
-      form.reset();
-      btn.classList.remove('is-loading'); btn.textContent = 'Enviar mensaje';
+    if(msg){ msg.className = 'form-msg'; msg.textContent = ''; }
+    const payload = {
+      nombre:  document.getElementById('cf-nombre').value.trim(),
+      email:   document.getElementById('cf-email').value.trim(),
+      mensaje: document.getElementById('cf-mensaje').value.trim(),
+      _subject: 'Nuevo mensaje desde pituki-estudio.vercel.app',
+      _template: 'table'
+    };
+    const restore = () => { btn.classList.remove('is-loading'); btn.textContent = 'Enviar mensaje'; };
+    fetch('https://formsubmit.co/ajax/zulgag@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(r => { if(!r.ok) throw new Error('http'); return r.json(); })
+    .then(() => {
+      form.reset(); restore();
       if(msg){ msg.textContent = 'Gracias, recibimos tu mensaje. Te escribimos muy pronto.'; msg.classList.add('ok','show'); }
-    }, 700);
+    })
+    .catch(() => {
+      restore();
+      if(msg){ msg.textContent = 'No se pudo enviar ahora. Escríbenos directo por WhatsApp al +502 5131 5816.'; msg.classList.add('err','show'); }
+    });
   });
 }
 
