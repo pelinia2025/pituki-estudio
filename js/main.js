@@ -104,53 +104,19 @@ if(form){
     });
   });
   form.addEventListener('submit', e=>{
-    e.preventDefault();
     const results = Object.keys(rules).map(validateField);
     if(msg){ msg.className = 'form-msg'; msg.textContent = ''; }
     if(results.includes(false)){
+      e.preventDefault();   // solo bloqueamos el envio si hay campos invalidos
       const firstBad = form.querySelector('.field-group.invalid input, .field-group.invalid textarea');
       if(firstBad) firstBad.focus();
       if(msg){ msg.textContent = 'Revisa los campos marcados antes de enviar.'; msg.classList.add('err','show'); }
       return;
     }
-    // Conexion sin backend: el formulario llega por correo via FormSubmit (AJAX).
+    // Todo valido: dejamos que el formulario se envie de forma nativa a FormSubmit
+    // (modo estandar), que manda el correo + el agradecimiento y redirige a gracias.html.
     const btn = form.querySelector('button[type="submit"]');
     btn.classList.add('is-loading'); btn.textContent = 'Enviando…';
-    if(msg){ msg.className = 'form-msg'; msg.textContent = ''; }
-    const nombreVal = document.getElementById('cf-nombre').value.trim();
-    const payload = {
-      nombre:   nombreVal,
-      email:    document.getElementById('cf-email').value.trim(),
-      telefono: document.getElementById('cf-telefono').value.trim(),
-      pais:     document.getElementById('cf-pais').value.trim(),
-      mensaje:  document.getElementById('cf-mensaje').value.trim(),
-      _subject: 'Nuevo mensaje desde pituki-estudio.vercel.app',
-      _template: 'table',
-      // Auto-respuesta de agradecimiento que le llega a quien escribe
-      _autoresponse:
-        '¡Gracias por escribir a Pituki Estudio, ' + nombreVal + '!\n\n' +
-        'Recibimos tu mensaje y nuestro equipo lo revisará muy pronto. Te contactaremos ' +
-        'para conversar sobre tu marca y cómo acompañarte con creatividad con propósito.\n\n' +
-        'Si prefieres algo más directo, escríbenos por WhatsApp al +502 5131 5816.\n\n' +
-        '— El equipo de Pituki Estudio\n"Creatividad con propósito"'
-    };
-    const restore = () => { btn.classList.remove('is-loading'); btn.textContent = 'Enviar mensaje'; };
-    fetch('https://formsubmit.co/ajax/zulgag@gmail.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(r => r.json())
-    .then(data => {
-      const ok = data && (data.success === true || data.success === 'true');
-      if(!ok) throw new Error(data && data.message || 'fail');
-      form.reset(); restore();
-      if(msg){ msg.textContent = 'Gracias, recibimos tu mensaje. Te escribimos muy pronto.'; msg.classList.add('ok','show'); }
-    })
-    .catch(() => {
-      restore();
-      if(msg){ msg.textContent = 'No se pudo enviar ahora. Escríbenos directo por WhatsApp al +502 5131 5816.'; msg.classList.add('err','show'); }
-    });
   });
 }
 
